@@ -8,7 +8,7 @@ const adminData = require('./admin');
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
-  const products = adminData.products;
+  const products = adminData.products.reverse();
   res.render('shop', {prods: products, pageTitle: 'Shop', path: '/'});
 });
 
