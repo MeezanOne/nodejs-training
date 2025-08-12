@@ -8,27 +8,27 @@
                 <ul>
                     <% products.forEach(p => { %>
                         <li>
-                            <p><%= p.productData.title %> (<%= p.qty %>)</p>
+                            <p><%= p.title %> (<%= p.cartItem.quantity %>)</p>
 
                             <!-- Decrease -->
-                            <form action="/cart-decrease-item" method="POST" style="display:inline;">
-                                <input type="hidden" value="<%= p.productData.id %>" name="productId">
-                                <input type="hidden" value="<%= p.productData.price %>" name="productPrice">
+                            <!-- <form action="/cart-decrease-item" method="POST" style="display:inline;">
+                                <input type="hidden" value="<%= p.id %>" name="productId">
+                                <input type="hidden" value="<%= p.price %>" name="productPrice">
                                 <input type="hidden" value="decrease" name="action">
                                 <button class="btn" type="submit">-</button>
-                            </form>
+                            </form> -->
 
                             <!-- Increase -->
-                            <form action="/cart-increase-item" method="POST" style="display:inline;">
-                                <input type="hidden" value="<%= p.productData.id %>" name="productId">
-                                <input type="hidden" value="<%= p.productData.price %>" name="productPrice">
+                            <!-- <form action="/cart-increase-item" method="POST" style="display:inline;">
+                                <input type="hidden" value="<%= p.id %>" name="productId">
+                                <input type="hidden" value="<%= p.price %>" name="productPrice">
                                 <input type="hidden" value="increase" name="action">
                                 <button class="btn" type="submit">+</button>
-                            </form>
+                            </form> -->
 
 
                             <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= p.productData.id %>" name="productId">
+                                <input type="hidden" value="<%= p.id %>" name="productId">
                                 <button class="btn" type="submit">Delete</button>
                             </form>
                         </li>
