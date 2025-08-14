@@ -18,7 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     price,
     description,
     imageUrl,
-    null, // for creating id of the product so in first time it will be new 
+    null,
     req.user._id
   );
   product
@@ -67,8 +67,10 @@ exports.postEditProduct = (req, res, next) => {
     updatedPrice,
     updatedDesc,
     updatedImageUrl,
-    prodId
+    prodId,
+    req.user._id // ✅ pass userId here
   );
+
   product
     .save()
     .then(result => {
@@ -77,6 +79,7 @@ exports.postEditProduct = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()

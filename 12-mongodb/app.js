@@ -19,9 +19,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('689c830787de6ec4730c0fbe')
+  User.findById('689d8bda1c8e9bc1b1850bcf')
     .then(user => {
-      req.user = user;
+      if (!user) {
+        // Create a new user if not found (optional)
+        const newUser = new User('Test User', 'test@test.com', { items: [] });
+        return newUser.save().then(() => {
+          req.user = newUser;
+          next();
+        });
+      }
+      req.user = new User(
+        user.name,
+        user.email,
+        user.cart || { items: [] }, // ✅ default cart
+        user._id
+      );
       next();
     })
     .catch(err => console.log(err));
