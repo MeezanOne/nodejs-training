@@ -2,7 +2,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
 exports.getLogin = (req, res, next) => {
-  const message = req.flash('error');
+  let message = req.flash('error');
   if(message.length>0){
     message = message[0];
   }else{
@@ -16,7 +16,7 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
-    const message = req.flash('error');
+    let message = req.flash('error');
   if(message.length>0){
     message = message[0];
   }else{
