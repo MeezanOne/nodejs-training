@@ -6,6 +6,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
+const multer = require('multer')
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -15,10 +16,37 @@ const MONGODB_URI =
 
 const app = express();
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images'); // Make sure "images" folder exists at project root
+  },
+  filename: (req, file, cb) => {
+    // safer filename (no colons, no spaces)
+    cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'));
+  }
+});
+
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+
 // ✅ middleware that will always be there
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage:fileStorage , fileFilter: fileFilter}).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ✅ CSRF & Flash (we will enable after session store is ready)
@@ -94,6 +122,16 @@ mongoose.connect(MONGODB_URI, {
   app.use(errorController.get404);
 
   app.listen(3000, () => console.log('Server running on port 3000'));
+
+  // ✅ Global error handler
+app.use((error, req, res, next) => {
+  res.status(500).render('500', {
+    pageTitle: 'Error!',
+    path: '/500',
+    isAuthenticated: req.session?.isLoggedIn
+  });
+});
+
 })
 .catch(err => {
   console.error('MongoDB Connection Failed:', err.message);
@@ -113,6 +151,7 @@ mongoose.connect(MONGODB_URI, {
 
 // ✅ Global error handler
 app.use((error, req, res, next) => {
+  console.log(error)
   res.status(500).render('500', {
     pageTitle: 'Error!',
     path: '/500',
